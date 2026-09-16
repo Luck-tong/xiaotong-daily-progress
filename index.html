@@ -14,6 +14,8 @@
       --muted: #6d7887;
       --blue: #1a4e8a;
       --blue-soft: #eaf2fb;
+      --red: #c9333e;
+      --red-soft: #fff0f1;
       --line: #dce4ee;
       --paper: #ffffff;
       --canvas: #f4f7fb;
@@ -44,10 +46,10 @@
     }
 
     .masthead {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 292px;
+      align-items: center;
+      gap: 32px;
       margin-bottom: 24px;
     }
 
@@ -69,14 +71,61 @@
       line-height: 1;
     }
 
-    .project-mark {
-      padding: 9px 13px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255,255,255,.72);
-      color: var(--muted);
-      font-size: .82rem;
-      white-space: nowrap;
+    .month-card {
+      padding: 15px 16px 13px;
+      border: 1px solid rgba(201, 213, 226, .9);
+      border-radius: 18px;
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 10px 30px rgba(31, 54, 82, .06);
+    }
+
+    .month-title {
+      margin: 0 0 9px;
+      color: var(--ink);
+      font-size: .86rem;
+      font-weight: 750;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      text-align: center;
+    }
+
+    .calendar-weekday {
+      color: #8a94a2;
+      font-size: .67rem;
+      line-height: 22px;
+    }
+
+    .calendar-day {
+      position: relative;
+      min-height: 27px;
+      padding: 0;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #465264;
+      font-size: .73rem;
+    }
+
+    .calendar-day:hover { background: var(--blue-soft); }
+    .calendar-day.worked { background: var(--red-soft); color: var(--red); font-weight: 800; }
+    .calendar-day.worked::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 2px;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: currentColor;
+      transform: translateX(-50%);
+    }
+    .calendar-day.selected { background: var(--blue); color: #fff; font-weight: 800; }
+    .calendar-day.selected.worked::after { background: #fff; }
+    .calendar-blank { min-height: 27px; }
     }
 
     .report {
@@ -90,8 +139,8 @@
     .date-bar {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 18px 22px;
+      gap: 6px;
+      padding: 13px 18px;
       border-bottom: 1px solid var(--line);
       background: #fbfcfe;
     }
@@ -99,14 +148,14 @@
     .date-fields {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 1px;
     }
 
     .date-field {
       display: inline-flex;
       align-items: center;
-      gap: 2px;
-      padding: 0 8px;
+      gap: 1px;
+      padding: 0 5px;
       border: 1px solid transparent;
       border-radius: 10px;
       background: transparent;
@@ -228,15 +277,18 @@
       line-height: 1.75;
     }
 
-    .tag {
-      margin-top: 7px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: #f0f3f7;
-      color: #596678;
-      font-size: .75rem;
-      white-space: nowrap;
+    .delete-button {
+      min-height: 32px;
+      margin-top: 3px;
+      padding: 0 10px;
+      border: 1px solid #ead2d5;
+      border-radius: 9px;
+      background: #fff;
+      color: #a72d37;
+      font-size: .78rem;
+      font-weight: 650;
     }
+    .delete-button:hover { background: var(--red-soft); border-color: #dcaab0; }
 
     .empty {
       display: grid;
@@ -292,11 +344,13 @@
     .form-row textarea { min-height: 112px; resize: vertical; line-height: 1.6; }
     .form-row input:focus, .form-row textarea:focus, .form-row select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,78,138,.1); }
     .dialog-actions { display: flex; justify-content: flex-end; gap: 9px; padding-top: 6px; }
+    .password-error { min-height: 20px; margin: -5px 0 7px; color: var(--red); font-size: .82rem; }
+    .dialog-note { margin: -10px 0 18px; color: var(--muted); font-size: .82rem; line-height: 1.6; }
 
     @media (max-width: 680px) {
       .page { width: min(100% - 20px, 960px); padding: 34px 0 24px; }
-      .masthead { align-items: flex-start; }
-      .project-mark { display: none; }
+      .masthead { grid-template-columns: 1fr; gap: 18px; }
+      .month-card { width: 100%; }
       .report { border-radius: 18px; }
       .date-bar { align-items: flex-start; flex-wrap: wrap; padding: 14px; }
       .date-fields { width: 100%; justify-content: space-between; }
@@ -305,7 +359,7 @@
       .content { padding: 22px 18px; }
       .content-head { align-items: flex-start; flex-direction: column; gap: 6px; }
       .progress-item { grid-template-columns: 38px minmax(0, 1fr); gap: 10px; }
-      .tag { grid-column: 2; justify-self: start; margin-top: -7px; }
+      .delete-button { grid-column: 2; justify-self: start; }
       .summary { white-space: normal; }
     }
 
@@ -321,7 +375,10 @@
         <p class="eyebrow">Research &amp; Development Log</p>
         <h1>小童的每日进展</h1>
       </div>
-      <span class="project-mark">LexMate · 研发进度</span>
+      <aside class="month-card" aria-label="月度工作日历">
+        <p class="month-title" id="monthTitle"></p>
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </aside>
     </header>
 
     <section class="report" aria-labelledby="daily-title">
@@ -351,7 +408,7 @@
             <p>点击“添加”记录今天的新进展。<br>新增内容仅保存在当前浏览器。</p>
           </div>
         </div>
-        <p class="source-note">内容根据 LexMate 项目中的“功能优化（1）”与“页面设计（2）”任务记录整理。</p>
+        <p class="source-note">内容根据 LexMate 项目中的 Codex 任务记录按日期整理；浏览器内新增内容不会自动同步到公开网页。</p>
       </div>
     </section>
   </main>
@@ -365,14 +422,6 @@
           <input id="entryDate" name="entryDate" type="date" required>
         </div>
         <div class="form-row">
-          <label for="entryType">所属任务</label>
-          <select id="entryType" name="entryType">
-            <option>功能优化</option>
-            <option>页面设计</option>
-            <option>其他</option>
-          </select>
-        </div>
-        <div class="form-row">
           <label for="entryText">进展内容</label>
           <textarea id="entryText" name="entryText" placeholder="例如：修复了合同对照页面的布局问题" required></textarea>
         </div>
@@ -384,50 +433,102 @@
     </form>
   </dialog>
 
+  <dialog id="unlockDialog" aria-labelledby="unlockTitle">
+    <form method="dialog" id="unlockForm">
+      <div class="dialog-body">
+        <h2 class="dialog-title" id="unlockTitle">验证编辑密码</h2>
+        <p class="dialog-note">验证后可在本次打开页面期间添加或删除进展。</p>
+        <div class="form-row">
+          <label for="editPassword">密码</label>
+          <input id="editPassword" name="editPassword" type="password" inputmode="numeric" autocomplete="current-password" required>
+        </div>
+        <p class="password-error" id="passwordError" role="alert"></p>
+        <div class="dialog-actions">
+          <button class="btn" type="button" id="cancelUnlock">取消</button>
+          <button class="btn primary" type="submit">确认</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
   <script>
     const BASE_PROGRESS = {
       "2026-09-10": [
-        ["页面设计", "统一侧边栏与核心页面的视觉层级，优化悬浮、展开和键盘操作反馈。"],
-        ["页面设计", "重构“我的任务”为律师待办与 AI 结果审核中心，补充期限、负责人和审核状态。"],
-        ["页面设计", "完善案件中心台账，增加案号、案由、办理阶段、关键期限和风险信息。"]
+        "统一侧边栏入口的交互规则：展开箭头默认隐藏，仅在悬浮或键盘聚焦时显示，并补齐键盘操作反馈。",
+        "将“我的任务”重构为律师待办与 AI 结果审核中心，集中展示今日事项、临期任务、待确认结果和待客户反馈事项。",
+        "为任务列表补充关联项目／案件、负责人、下一期限和 AI 处理状态，让任务责任与进度可以直接判断。",
+        "完善案件中心台账字段，补充案号、案由、当事人、我方角色、受理机构、办理阶段、承办律师和关键期限。",
+        "增加案件风险与关联项目提示，并明确演示数据和真实执行状态的边界，避免把示例内容当作真实进展。"
       ],
       "2026-09-11": [
-        ["页面设计", "整合“我的任务”与“日程中心”为工作中心，统一今日、任务、日历和待确认事项。"],
-        ["页面设计", "完成默认三栏、按需四栏布局，副本仅用于内容区域，并保留原有案件与草稿状态。"],
-        ["页面设计", "将右侧 AI 助手改为连续消息流，支持文字、附件与现有文件引用。"],
-        ["页面设计", "统一 LexMate 品牌图标、发送按钮及案件／网盘／协作页面的布局细节。"]
+        "完成工作台默认三栏、按需四栏的布局方案，保证案件、材料、对话和 AI 助手可以在同一工作流中连续使用。",
+        "整合“我的任务”与“日程中心”为工作中心，统一今日、任务、日历、待确认事项和关键期限入口。",
+        "将业务中心收拢到案件中心，减少重复入口，并保持案件、项目和具体任务之间的关联关系。",
+        "把右侧 AI 助手改为连续消息流，支持发送文字、拖入附件和引用已有文件。",
+        "建立基于 fileId 与 versionId 的文件引用规则，区分候选文件、当前文件、历史版本和草稿，避免同名文件串错。",
+        "明确副本区域只复制内容视图，不复制底层数据；关闭副本时只收起对应区域，不影响原案件和材料。",
+        "补齐发送按钮、消息输入和连续追问体验，并保留各区域独立的滚动位置、草稿和上下文。",
+        "统一 LexMate 品牌图标及案件、网盘、协作页面的基础布局细节。"
       ],
       "2026-09-12": [
-        ["页面设计", "确认最新代码与运行目录，清理旧版分屏排列控件，固定 1｜2｜4、2｜3｜4 和 3A｜3B｜4 三种工作布局。"],
-        ["页面设计", "完善文件拖入与引用流程，区分文件类型、版本、来源和归属状态，避免重复添加。"],
-        ["页面设计", "修复案件台账、律师协作、网盘和知识库在窄区域下的显示问题。"],
-        ["页面设计", "统一折页 L 品牌标识，并完成本地构建、测试和多尺寸页面验收。"]
+        "核对 LexMate 最新代码、实际运行目录与预览地址，确保后续修改落在领导预览所对应的权威版本。",
+        "清理旧版双内容区、自动排列、比例滑杆和竖向布局偏好，减少重复且容易混淆的布局控制。",
+        "固定 1｜2｜4、2｜3｜4、3A｜3B｜4 三种工作布局，并保留各区域切换前的文件、对话和草稿状态。",
+        "统一导航、AI 助手和消息区域的折页 L 品牌标识，修正不同页面图标尺寸与对齐差异。",
+        "完善共享文件接收流程，支持拖入与引用，同时阻止同一文件被重复添加。",
+        "补充文件类型、大小、来源、所属项目和关联状态校验，并为失败情况提供明确提示。",
+        "压缩筛选器与统计卡片占用空间，让案件台账在较窄内容区仍能完整展示核心字段。",
+        "修复律师协作、网盘和知识库在窄区域下的换行、溢出和操作按钮遮挡问题。",
+        "完成本地构建、自动化测试和多尺寸页面检查，确认三种布局均可正常使用。"
       ],
       "2026-09-13": [
-        ["页面设计", "发布 LexMate 领导预览版到 GitHub Pages。"],
-        ["页面设计", "完成类型检查、自动化测试和生产构建，并核对线上 HTML、JavaScript、CSS 与本地产物一致。"]
+        "完成 LexMate 领导预览版的 GitHub Pages 发布配置，并生成可直接访问的公开预览地址。",
+        "执行 TypeScript 类型检查、16 项自动化测试和生产构建，确认发布产物可正常生成。",
+        "逐项核对线上 HTML、JavaScript 和 CSS 文件，确认线上资源哈希与本地构建结果一致。",
+        "验证 GitHub Pages 为独立托管地址，开发电脑关闭后领导仍可继续访问。"
       ],
       "2026-09-14": [
-        ["页面设计", "重构工作中心提醒区，增加紧凑统计、分类筛选、日期状态和案件／项目分页。"],
-        ["页面设计", "新增可拖动的上下区域分界，统一细分隔线、聊天背景、帮助浮层和导航对齐。"],
-        ["页面设计", "将滚动条与展开箭头调整为默认隐藏、悬浮显示，并把日历改为年／月／日独立选择。"],
-        ["页面设计", "精简头像菜单并新增设置中心，完善个人资料、团队、本地助手、归档、深色模式和中英文入口。"],
-        ["页面设计", "收紧模型、技能、操作确认等弹窗，完善业务类型筛选与顶部搜索交互。"],
-        ["页面设计", "修复工作中心与内容区域的切换状态、最近对话分类及品牌资源路径，并多次更新领导审核版。"]
+        "重构工作中心提醒区，增加紧凑统计卡片，并统一今日、逾期、待确认等分类的筛选与数量口径。",
+        "把提醒事项改为清晰的列表结构，补充日期状态、关联案件／项目和分页，减少首屏信息拥挤。",
+        "完善专家能力包页面的响应式布局，使能力包卡片和技能筛选在宽窄区域下互不干扰。",
+        "增加可拖动的上下区域分界，保留拖动后的工作区尺寸，并修复分页、帮助浮层和细分隔线。",
+        "将滚动条和导航展开箭头调整为默认弱化、悬浮显示，减少界面长期存在的视觉噪音。",
+        "把日期控件改为年、月、日可分别选择，并同步修正工作中心中日期变化后的数据映射。",
+        "精简头像菜单并新增设置中心，整理个人资料、团队管理、本地助手、归档和语言入口。",
+        "补充深色模式与中英文切换入口，统一设置项的层级、说明和操作反馈。",
+        "收紧模型选择、技能选择和操作确认弹窗，使弹窗在小尺寸窗口内仍能完整展示。",
+        "完善业务类型菜单和顶部搜索交互，统一选中态、关闭逻辑与键盘操作。",
+        "修复工作区从 1｜3｜4 切换到 2｜3｜4 时的内容恢复，并整理最近对话的分类规则。",
+        "修正品牌图标与子目录资源路径，保证 GitHub Pages 环境下图标和静态资源能够正常加载。"
       ],
       "2026-09-15": [
-        ["页面设计", "将 LexMate 源码迁移至公司 Gitee 私有仓库，并通过重新克隆、35 项测试和生产构建验证。"],
-        ["页面设计", "将 GitHub 仓库改为私有，停止原 GitHub Pages 公开访问，降低源码暴露风险。"],
-        ["页面设计", "把领导预览发布到 CloudBase 独立目录，核对线上文件、品牌图标及本地产物哈希一致。"],
-        ["功能优化", "新增项目对话、记忆与成果工作区，支持成果版本、复核状态和 Markdown 导出。"],
-        ["功能优化", "支持 @文件、@成果、@项目、@记忆引用，并区分正在浏览、对话归属和实际引用。"],
-        ["功能优化", "完善聊天恢复、项目／任务归档及软删除恢复，保留原对象 ID、关系和后续消息。"],
-        ["功能优化", "统一筛选下拉；将新建／编辑日程改为居中弹窗，并完成宽窄日历适配。"],
-        ["功能优化", "重构合同与文书副本对照：原稿只读、修改稿可编辑、意见单套展示，关闭任一区域仍保留草稿。"]
+        "将 LexMate 源码迁移到公司 Gitee 私有仓库，并通过重新克隆验证仓库内容与提交记录完整。",
+        "在迁移后的代码上重新执行 35 项测试与生产构建，确认私有仓库版本可以独立运行。",
+        "将原 GitHub 仓库调整为私有并停止旧 GitHub Pages 公开访问，降低源码和历史版本暴露风险。",
+        "把领导预览部署到 CloudBase 独立目录，核对线上文件、品牌图标与本地产物哈希一致。",
+        "新增项目对话、项目记忆和成果工作区，使材料、对话、任务、成果、复核与归档形成连续流程。",
+        "为成果增加版本记录、复核状态与 Markdown 导出，便于领导查看成果演进和当前确认状态。",
+        "支持 @文件、@成果、@项目和 @记忆引用，并明确区分正在浏览、对话归属与回答实际引用的材料。",
+        "完善清空聊天后的恢复逻辑，保留原 conversationId、既有消息以及后续追加消息的正确顺序。",
+        "为项目和任务增加归档与软删除恢复，恢复时沿用原对象 ID 和关系，不覆盖归档后产生的新消息。",
+        "统一各页面筛选下拉的悬浮、点击、勾选、Esc 和点击外部关闭行为，并补齐菜单图标。",
+        "将新建／编辑日程改为居中弹窗，保留未提交草稿和原页面滚动位置。",
+        "完成日历与列表在宽窄布局下的响应式适配，避免日期、操作按钮和事项内容互相遮挡。",
+        "重构合同与文书副本对照：原稿只读、修改稿可编辑、意见单套展示，并保留版本记录。",
+        "保证关闭任一对照区域时不丢失修改稿草稿，同时将同步操作设为明确的可选动作。"
+      ],
+      "2026-09-16": [
+        "创建“小童的每日进展”独立网页，按日期集中展示 LexMate 近期由 Codex 完成的研发工作。",
+        "实现年、月、日独立选择、默认定位今天、星期显示和无记录日期的空状态。",
+        "将 9 月 10 日至 15 日的任务记录按实际完成日期拆分整理，补充每项工作的目的和完成结果。",
+        "在标题旁新增跟随所选日期变化的月历，并将有工作记录的日期标红，支持直接点击日期查看。",
+        "移除添加任务时的分类选项，使用密码验证解锁添加和删除操作，避免普通浏览时误改内容。",
+        "完成桌面与窄屏布局、日期联动、密码错误提示、添加删除和本地数据保存的交互检查。"
       ]
     };
 
-    const STORAGE_KEY = "xiaotong-daily-progress-v1";
+    const STORAGE_KEY = "xiaotong-daily-progress-v3";
+    const EDIT_PASSWORD = "1215";
     const yearSelect = document.querySelector("#year");
     const monthSelect = document.querySelector("#month");
     const daySelect = document.querySelector("#day");
@@ -435,18 +536,39 @@
     const list = document.querySelector("#progressList");
     const empty = document.querySelector("#emptyState");
     const summary = document.querySelector("#summary");
+    const monthTitle = document.querySelector("#monthTitle");
+    const calendarGrid = document.querySelector("#calendarGrid");
     const dialog = document.querySelector("#addDialog");
     const form = document.querySelector("#addForm");
     const entryDate = document.querySelector("#entryDate");
-    const entryType = document.querySelector("#entryType");
     const entryText = document.querySelector("#entryText");
+    const unlockDialog = document.querySelector("#unlockDialog");
+    const unlockForm = document.querySelector("#unlockForm");
+    const editPassword = document.querySelector("#editPassword");
+    const passwordError = document.querySelector("#passwordError");
+    let editingUnlocked = false;
 
     function pad(value) { return String(value).padStart(2, "0"); }
     function keyFromDate(date) { return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`; }
     function selectedKey() { return `${yearSelect.value}-${pad(monthSelect.value)}-${pad(daySelect.value)}`; }
-    function localEntries() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
-      catch { return {}; }
+    function localState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        return { added: saved.added || {}, deleted: saved.deleted || {} };
+      } catch {
+        return { added: {}, deleted: {} };
+      }
+    }
+
+    function saveLocalState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function itemsForDate(key) {
+      const state = localState();
+      const deleted = new Set(state.deleted[key] || []);
+      const base = (BASE_PROGRESS[key] || []).map((text, index) => ({ id: `base-${key}-${index}`, text, source: "base" }));
+      return [...base.filter(item => !deleted.has(item.id)), ...(state.added[key] || []).map(item => ({ ...item, source: "local" }))];
     }
 
     function fillSelect(select, start, end) {
@@ -472,29 +594,86 @@
       render();
     }
 
+    function renderCalendar() {
+      const year = Number(yearSelect.value);
+      const month = Number(monthSelect.value);
+      const selectedDay = Number(daySelect.value);
+      monthTitle.textContent = `${year} 年 ${month} 月 · 工作日历`;
+      calendarGrid.innerHTML = "";
+      "日一二三四五六".split("").forEach(label => {
+        const cell = document.createElement("span");
+        cell.className = "calendar-weekday";
+        cell.textContent = label;
+        calendarGrid.append(cell);
+      });
+      const firstWeekday = new Date(year, month - 1, 1).getDay();
+      const max = new Date(year, month, 0).getDate();
+      for (let index = 0; index < firstWeekday; index += 1) {
+        const blank = document.createElement("span");
+        blank.className = "calendar-blank";
+        calendarGrid.append(blank);
+      }
+      for (let day = 1; day <= max; day += 1) {
+        const key = `${year}-${pad(month)}-${pad(day)}`;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "calendar-day";
+        button.textContent = day;
+        button.setAttribute("aria-label", `${month}月${day}日${itemsForDate(key).length ? "，有工作记录" : ""}`);
+        if (itemsForDate(key).length) button.classList.add("worked");
+        if (day === selectedDay) button.classList.add("selected");
+        button.addEventListener("click", () => { daySelect.value = day; render(); });
+        calendarGrid.append(button);
+      }
+    }
+
     function render() {
       const key = selectedKey();
       const selected = new Date(`${key}T12:00:00`);
       weekday.textContent = `星期${"日一二三四五六"[selected.getDay()]}`;
-      const extras = localEntries()[key] || [];
-      const items = [...(BASE_PROGRESS[key] || []), ...extras];
+      const items = itemsForDate(key);
       list.innerHTML = "";
-      items.forEach(([type, text]) => {
+      items.forEach(({ id, text, source }) => {
         const item = document.createElement("li");
         item.className = "progress-item";
         const paragraph = document.createElement("p");
         paragraph.className = "progress-text";
         paragraph.textContent = text;
-        const tag = document.createElement("span");
-        tag.className = "tag";
-        tag.textContent = type;
-        item.append(paragraph, tag);
+        item.append(paragraph);
+        if (editingUnlocked) {
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "delete-button";
+          remove.textContent = "删除";
+          remove.addEventListener("click", () => deleteItem(key, id, source));
+          item.append(remove);
+        }
         list.append(item);
       });
       empty.hidden = items.length > 0;
       list.hidden = items.length === 0;
       summary.textContent = items.length ? `共 ${items.length} 项已完成` : "等待更新";
+      renderCalendar();
       history.replaceState(null, "", `#${key}`);
+    }
+
+    function deleteItem(key, id, source) {
+      const state = localState();
+      if (source === "local") {
+        state.added[key] = (state.added[key] || []).filter(item => item.id !== id);
+      } else {
+        state.deleted[key] ||= [];
+        if (!state.deleted[key].includes(id)) state.deleted[key].push(id);
+      }
+      saveLocalState(state);
+      render();
+    }
+
+    function openAddDialog() {
+      entryDate.value = selectedKey();
+      entryText.value = "";
+      dialog.showModal();
+      entryText.focus();
     }
 
     fillSelect(yearSelect, 2024, 2032);
@@ -508,23 +687,40 @@
     daySelect.addEventListener("change", render);
     document.querySelector("#todayButton").addEventListener("click", () => setDate(new Date()));
     document.querySelector("#addButton").addEventListener("click", () => {
-      entryDate.value = selectedKey();
-      entryText.value = "";
-      dialog.showModal();
-      entryText.focus();
+      if (editingUnlocked) return openAddDialog();
+      editPassword.value = "";
+      passwordError.textContent = "";
+      unlockDialog.showModal();
+      editPassword.focus();
     });
     document.querySelector("#cancelButton").addEventListener("click", () => dialog.close());
     dialog.addEventListener("click", event => {
       if (event.target === dialog) dialog.close();
     });
+    document.querySelector("#cancelUnlock").addEventListener("click", () => unlockDialog.close());
+    unlockDialog.addEventListener("click", event => {
+      if (event.target === unlockDialog) unlockDialog.close();
+    });
+    unlockForm.addEventListener("submit", event => {
+      event.preventDefault();
+      if (editPassword.value !== EDIT_PASSWORD) {
+        passwordError.textContent = "密码错误，请重新输入。";
+        editPassword.select();
+        return;
+      }
+      editingUnlocked = true;
+      unlockDialog.close();
+      render();
+      openAddDialog();
+    });
     form.addEventListener("submit", event => {
       event.preventDefault();
       const text = entryText.value.trim();
       if (!text) return;
-      const all = localEntries();
-      all[entryDate.value] ||= [];
-      all[entryDate.value].push([entryType.value, text]);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+      const state = localState();
+      state.added[entryDate.value] ||= [];
+      state.added[entryDate.value].push({ id: `local-${Date.now()}-${Math.random().toString(16).slice(2)}`, text });
+      saveLocalState(state);
       const savedDate = new Date(`${entryDate.value}T12:00:00`);
       dialog.close();
       setDate(savedDate);
