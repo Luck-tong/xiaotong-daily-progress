@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="小童的每日研发进展">
+  <meta name="theme-color" content="#f4f7fb">
+  <title>小童的每日进展</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231a4e8a'/%3E%3Cpath d='M18 17h28v32H18z' fill='white' opacity='.96'/%3E%3Cpath d='M24 26h16M24 33h16M24 40h10' stroke='%231a4e8a' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #182433;
+      --muted: #6d7887;
+      --blue: #1a4e8a;
+      --blue-soft: #eaf2fb;
+      --line: #dce4ee;
+      --paper: #ffffff;
+      --canvas: #f4f7fb;
+      --shadow: 0 18px 50px rgba(31, 54, 82, .09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(49, 112, 179, .09), transparent 26rem),
+        linear-gradient(180deg, #f8fafc 0, var(--canvas) 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    button, select, input, textarea { font: inherit; }
+    button, select { min-height: 42px; }
+    button { cursor: pointer; }
+
+    .page {
+      width: min(960px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 64px 0 48px;
+    }
+
+    .masthead {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Songti SC", "STSong", serif;
+      font-size: clamp(2.25rem, 6vw, 4.35rem);
+      font-weight: 700;
+      letter-spacing: -.045em;
+      line-height: 1;
+    }
+
+    .project-mark {
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      color: var(--muted);
+      font-size: .82rem;
+      white-space: nowrap;
+    }
+
+    .report {
+      overflow: hidden;
+      border: 1px solid rgba(201, 213, 226, .9);
+      border-radius: 24px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .date-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfe;
+    }
+
+    .date-fields {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .date-field {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: transparent;
+      transition: background .18s ease, border-color .18s ease;
+    }
+
+    .date-field:hover,
+    .date-field:focus-within {
+      border-color: #cbd8e7;
+      background: var(--blue-soft);
+    }
+
+    .date-field select {
+      appearance: none;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 680;
+      text-align: center;
+    }
+
+    #year { width: 56px; }
+    #month, #day { width: 32px; }
+
+    .suffix { color: var(--muted); font-size: .92rem; }
+
+    .weekday {
+      margin-left: 4px;
+      color: var(--muted);
+      font-size: .92rem;
+      white-space: nowrap;
+    }
+
+    .date-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 15px;
+      border: 1px solid #cbd8e7;
+      border-radius: 11px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 650;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .btn:hover { border-color: #9bb5d2; background: #f7fafd; }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary { border-color: var(--blue); background: var(--blue); color: #fff; }
+    .btn.primary:hover { background: #153f70; }
+
+    .content { padding: clamp(24px, 5vw, 48px); }
+
+    .content-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    h2 {
+      margin: 0;
+      font-family: "Songti SC", "STSong", serif;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      line-height: 1.2;
+    }
+
+    .summary {
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+      white-space: nowrap;
+    }
+
+    .progress-list {
+      margin: 0;
+      padding: 7px 0 0;
+      list-style: none;
+      counter-reset: progress;
+    }
+
+    .progress-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: start;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--line);
+      counter-increment: progress;
+    }
+
+    .progress-item::before {
+      content: counter(progress, decimal-leading-zero);
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: .8rem;
+      font-weight: 800;
+    }
+
+    .progress-text {
+      margin: 5px 0 0;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .tag {
+      margin-top: 7px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #f0f3f7;
+      color: #596678;
+      font-size: .75rem;
+      white-space: nowrap;
+    }
+
+    .empty {
+      display: grid;
+      min-height: 300px;
+      place-items: center;
+      text-align: center;
+    }
+
+    .empty-mark {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 16px;
+      border: 1px dashed #9db0c6;
+      border-radius: 16px;
+      color: var(--blue);
+      font-size: 1.8rem;
+      line-height: 50px;
+    }
+
+    .empty h3 { margin: 0 0 8px; font-size: 1.05rem; }
+    .empty p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.7; }
+
+    .source-note {
+      margin: 22px 0 0;
+      color: #85909e;
+      font-size: .78rem;
+      line-height: 1.6;
+    }
+
+    dialog {
+      width: min(520px, calc(100% - 28px));
+      padding: 0;
+      border: 0;
+      border-radius: 20px;
+      color: var(--ink);
+      box-shadow: 0 30px 80px rgba(16, 35, 58, .24);
+    }
+
+    dialog::backdrop { background: rgba(25, 38, 54, .42); backdrop-filter: blur(3px); }
+    .dialog-body { padding: 26px; }
+    .dialog-title { margin: 0 0 22px; font: 700 1.35rem/1.2 "Songti SC", serif; }
+    .form-row { margin-bottom: 16px; }
+    .form-row label { display: block; margin-bottom: 7px; font-size: .88rem; font-weight: 700; }
+    .form-row input, .form-row textarea, .form-row select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cbd8e7;
+      border-radius: 10px;
+      outline: 0;
+      background: #fff;
+      color: var(--ink);
+    }
+    .form-row textarea { min-height: 112px; resize: vertical; line-height: 1.6; }
+    .form-row input:focus, .form-row textarea:focus, .form-row select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,78,138,.1); }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 9px; padding-top: 6px; }
+
+    @media (max-width: 680px) {
+      .page { width: min(100% - 20px, 960px); padding: 34px 0 24px; }
+      .masthead { align-items: flex-start; }
+      .project-mark { display: none; }
+      .report { border-radius: 18px; }
+      .date-bar { align-items: flex-start; flex-wrap: wrap; padding: 14px; }
+      .date-fields { width: 100%; justify-content: space-between; }
+      .date-actions { margin-left: 0; }
+      .weekday { margin-left: auto; align-self: center; }
+      .content { padding: 22px 18px; }
+      .content-head { align-items: flex-start; flex-direction: column; gap: 6px; }
+      .progress-item { grid-template-columns: 38px minmax(0, 1fr); gap: 10px; }
+      .tag { grid-column: 2; justify-self: start; margin-top: -7px; }
+      .summary { white-space: normal; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Research &amp; Development Log</p>
+        <h1>小童的每日进展</h1>
+      </div>
+      <span class="project-mark">LexMate · 研发进度</span>
+    </header>
+
+    <section class="report" aria-labelledby="daily-title">
+      <div class="date-bar" aria-label="日期选择">
+        <div class="date-fields">
+          <label class="date-field"><select id="year" aria-label="选择年份"></select><span class="suffix">年</span></label>
+          <label class="date-field"><select id="month" aria-label="选择月份"></select><span class="suffix">月</span></label>
+          <label class="date-field"><select id="day" aria-label="选择日期"></select><span class="suffix">日</span></label>
+        </div>
+        <span class="weekday" id="weekday"></span>
+        <div class="date-actions">
+          <button class="btn" id="todayButton" type="button">今天</button>
+          <button class="btn primary" id="addButton" type="button" aria-haspopup="dialog">＋ 添加</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="content-head">
+          <h2 id="daily-title">研发进展</h2>
+          <p class="summary" id="summary"></p>
+        </div>
+        <ol class="progress-list" id="progressList"></ol>
+        <div class="empty" id="emptyState" hidden>
+          <div>
+            <div class="empty-mark" aria-hidden="true">＋</div>
+            <h3>当天暂无已归档进展</h3>
+            <p>点击“添加”记录今天的新进展。<br>新增内容仅保存在当前浏览器。</p>
+          </div>
+        </div>
+        <p class="source-note">内容根据 LexMate 项目中的“功能优化（1）”与“页面设计（2）”任务记录整理。</p>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="addDialog" aria-labelledby="dialogTitle">
+    <form method="dialog" id="addForm">
+      <div class="dialog-body">
+        <h2 class="dialog-title" id="dialogTitle">添加研发进展</h2>
+        <div class="form-row">
+          <label for="entryDate">日期</label>
+          <input id="entryDate" name="entryDate" type="date" required>
+        </div>
+        <div class="form-row">
+          <label for="entryType">所属任务</label>
+          <select id="entryType" name="entryType">
+            <option>功能优化</option>
+            <option>页面设计</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="entryText">进展内容</label>
+          <textarea id="entryText" name="entryText" placeholder="例如：修复了合同对照页面的布局问题" required></textarea>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn" value="cancel" type="button" id="cancelButton">取消</button>
+          <button class="btn primary" value="default" type="submit">保存</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const BASE_PROGRESS = {
+      "2026-09-10": [
+        ["页面设计", "统一侧边栏与核心页面的视觉层级，优化悬浮、展开和键盘操作反馈。"],
+        ["页面设计", "重构“我的任务”为律师待办与 AI 结果审核中心，补充期限、负责人和审核状态。"],
+        ["页面设计", "完善案件中心台账，增加案号、案由、办理阶段、关键期限和风险信息。"]
+      ],
+      "2026-09-11": [
+        ["页面设计", "整合“我的任务”与“日程中心”为工作中心，统一今日、任务、日历和待确认事项。"],
+        ["页面设计", "完成默认三栏、按需四栏布局，副本仅用于内容区域，并保留原有案件与草稿状态。"],
+        ["页面设计", "将右侧 AI 助手改为连续消息流，支持文字、附件与现有文件引用。"],
+        ["页面设计", "统一 LexMate 品牌图标、发送按钮及案件／网盘／协作页面的布局细节。"]
+      ],
+      "2026-09-12": [
+        ["页面设计", "确认最新代码与运行目录，清理旧版分屏排列控件，固定 1｜2｜4、2｜3｜4 和 3A｜3B｜4 三种工作布局。"],
+        ["页面设计", "完善文件拖入与引用流程，区分文件类型、版本、来源和归属状态，避免重复添加。"],
+        ["页面设计", "修复案件台账、律师协作、网盘和知识库在窄区域下的显示问题。"],
+        ["页面设计", "统一折页 L 品牌标识，并完成本地构建、测试和多尺寸页面验收。"]
+      ],
+      "2026-09-13": [
+        ["页面设计", "发布 LexMate 领导预览版到 GitHub Pages。"],
+        ["页面设计", "完成类型检查、自动化测试和生产构建，并核对线上 HTML、JavaScript、CSS 与本地产物一致。"]
+      ],
+      "2026-09-14": [
+        ["页面设计", "重构工作中心提醒区，增加紧凑统计、分类筛选、日期状态和案件／项目分页。"],
+        ["页面设计", "新增可拖动的上下区域分界，统一细分隔线、聊天背景、帮助浮层和导航对齐。"],
+        ["页面设计", "将滚动条与展开箭头调整为默认隐藏、悬浮显示，并把日历改为年／月／日独立选择。"],
+        ["页面设计", "精简头像菜单并新增设置中心，完善个人资料、团队、本地助手、归档、深色模式和中英文入口。"],
+        ["页面设计", "收紧模型、技能、操作确认等弹窗，完善业务类型筛选与顶部搜索交互。"],
+        ["页面设计", "修复工作中心与内容区域的切换状态、最近对话分类及品牌资源路径，并多次更新领导审核版。"]
+      ],
+      "2026-09-15": [
+        ["页面设计", "将 LexMate 源码迁移至公司 Gitee 私有仓库，并通过重新克隆、35 项测试和生产构建验证。"],
+        ["页面设计", "将 GitHub 仓库改为私有，停止原 GitHub Pages 公开访问，降低源码暴露风险。"],
+        ["页面设计", "把领导预览发布到 CloudBase 独立目录，核对线上文件、品牌图标及本地产物哈希一致。"],
+        ["功能优化", "新增项目对话、记忆与成果工作区，支持成果版本、复核状态和 Markdown 导出。"],
+        ["功能优化", "支持 @文件、@成果、@项目、@记忆引用，并区分正在浏览、对话归属和实际引用。"],
+        ["功能优化", "完善聊天恢复、项目／任务归档及软删除恢复，保留原对象 ID、关系和后续消息。"],
+        ["功能优化", "统一筛选下拉；将新建／编辑日程改为居中弹窗，并完成宽窄日历适配。"],
+        ["功能优化", "重构合同与文书副本对照：原稿只读、修改稿可编辑、意见单套展示，关闭任一区域仍保留草稿。"]
+      ]
+    };
+
+    const STORAGE_KEY = "xiaotong-daily-progress-v1";
+    const yearSelect = document.querySelector("#year");
+    const monthSelect = document.querySelector("#month");
+    const daySelect = document.querySelector("#day");
+    const weekday = document.querySelector("#weekday");
+    const list = document.querySelector("#progressList");
+    const empty = document.querySelector("#emptyState");
+    const summary = document.querySelector("#summary");
+    const dialog = document.querySelector("#addDialog");
+    const form = document.querySelector("#addForm");
+    const entryDate = document.querySelector("#entryDate");
+    const entryType = document.querySelector("#entryType");
+    const entryText = document.querySelector("#entryText");
+
+    function pad(value) { return String(value).padStart(2, "0"); }
+    function keyFromDate(date) { return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`; }
+    function selectedKey() { return `${yearSelect.value}-${pad(monthSelect.value)}-${pad(daySelect.value)}`; }
+    function localEntries() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
+      catch { return {}; }
+    }
+
+    function fillSelect(select, start, end) {
+      select.innerHTML = "";
+      for (let value = start; value <= end; value += 1) {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        select.append(option);
+      }
+    }
+
+    function refreshDays(preferredDay) {
+      const max = new Date(Number(yearSelect.value), Number(monthSelect.value), 0).getDate();
+      fillSelect(daySelect, 1, max);
+      daySelect.value = Math.min(Number(preferredDay || 1), max);
+    }
+
+    function setDate(date) {
+      yearSelect.value = date.getFullYear();
+      monthSelect.value = date.getMonth() + 1;
+      refreshDays(date.getDate());
+      render();
+    }
+
+    function render() {
+      const key = selectedKey();
+      const selected = new Date(`${key}T12:00:00`);
+      weekday.textContent = `星期${"日一二三四五六"[selected.getDay()]}`;
+      const extras = localEntries()[key] || [];
+      const items = [...(BASE_PROGRESS[key] || []), ...extras];
+      list.innerHTML = "";
+      items.forEach(([type, text]) => {
+        const item = document.createElement("li");
+        item.className = "progress-item";
+        const paragraph = document.createElement("p");
+        paragraph.className = "progress-text";
+        paragraph.textContent = text;
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = type;
+        item.append(paragraph, tag);
+        list.append(item);
+      });
+      empty.hidden = items.length > 0;
+      list.hidden = items.length === 0;
+      summary.textContent = items.length ? `共 ${items.length} 项已完成` : "等待更新";
+      history.replaceState(null, "", `#${key}`);
+    }
+
+    fillSelect(yearSelect, 2024, 2032);
+    fillSelect(monthSelect, 1, 12);
+    const hashDate = location.hash.match(/^#(\d{4})-(\d{2})-(\d{2})$/);
+    const initial = hashDate ? new Date(`${hashDate[1]}-${hashDate[2]}-${hashDate[3]}T12:00:00`) : new Date();
+    setDate(initial);
+
+    yearSelect.addEventListener("change", () => { refreshDays(daySelect.value); render(); });
+    monthSelect.addEventListener("change", () => { refreshDays(daySelect.value); render(); });
+    daySelect.addEventListener("change", render);
+    document.querySelector("#todayButton").addEventListener("click", () => setDate(new Date()));
+    document.querySelector("#addButton").addEventListener("click", () => {
+      entryDate.value = selectedKey();
+      entryText.value = "";
+      dialog.showModal();
+      entryText.focus();
+    });
+    document.querySelector("#cancelButton").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", event => {
+      if (event.target === dialog) dialog.close();
+    });
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const text = entryText.value.trim();
+      if (!text) return;
+      const all = localEntries();
+      all[entryDate.value] ||= [];
+      all[entryDate.value].push([entryType.value, text]);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+      const savedDate = new Date(`${entryDate.value}T12:00:00`);
+      dialog.close();
+      setDate(savedDate);
+    });
+  </script>
+</body>
+</html>
